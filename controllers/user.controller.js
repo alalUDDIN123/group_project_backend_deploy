@@ -144,8 +144,7 @@ const usergetProfile = async (req, res) => {
 };
 
 const userUpdateProfile = async (req, res) => {
-  const { name, mobile, city, area, district, state, pinCode, addressId } =
-    req.body;
+  const { name, mobile, city, area,  state, pinCode, addressId } =req.body;
   try {
     // Find the user by ID
     const user = await UserModel.findById(req.body.userID);
@@ -156,7 +155,6 @@ const userUpdateProfile = async (req, res) => {
     const newAddress = {
       city,
       area,
-      district,
       state,
       pinCode,
     };

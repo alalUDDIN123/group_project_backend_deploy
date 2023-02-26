@@ -26,7 +26,7 @@ userRoutes.post("/register", userSignupInputValidate, registerUser);
 userRoutes.post("/login", userLoginInput, userLogin);
 userRoutes.post("/logout", authenticateToken, userLogout)
 userRoutes.get("/address", authenticateToken, usergetProfile)
-userRoutes.patch("/profile", authenticateToken, profileInput, userUpdateProfile)
+userRoutes.patch("/profile", authenticateToken,  userUpdateProfile)
 userRoutes.delete("/delete/address", authenticateToken,userDeleteAddress);
 userRoutes.patch("/password/change", authenticateToken, ChangePassword)
 userRoutes.patch("/forgetPassword",  forgetPassword)
