@@ -247,7 +247,7 @@ const userDeleteAddress = async (req, res) => {
   }
 };
 
-const forgetPassword = async (req, res) => {
+const ChangePassword = async (req, res) => {
   const { email, oldPassword, newPassword } = req.body;
 
   if( ! email || ! oldPassword){
@@ -281,6 +281,26 @@ const forgetPassword = async (req, res) => {
   }
 };
 
+const forgetPassword = async (req, res) => {
+  const { email, newPassword } = req.body;
+  try {
+    const user = await UserModel.findOne({ email });
+    if (!user) {
+      return res.status(404).send("User not found");
+    }
+
+    // hash and update user's password with the new password
+    const hashedPassword = await bcrypt.hash(newPassword, 5);
+    user.pass = hashedPassword;
+    await user.save();
+
+    res.status(200).send("Password updated successfully");
+  } catch (error) {
+    res.status(400).send({ msg: "Something went wrong", error: error.message });
+  }
+};
+
+
 
 module.exports = {
   getAllusers,
@@ -290,5 +310,6 @@ module.exports = {
   usergetProfile,
   userUpdateProfile,
   userDeleteAddress,
+  ChangePassword,
   forgetPassword
 };
