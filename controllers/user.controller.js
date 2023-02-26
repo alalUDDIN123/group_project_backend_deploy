@@ -4,17 +4,49 @@ const jwt = require("jsonwebtoken");
 
 
 const getAllusers = async (req, res) => {
+  const userID = req.body.userID;
+  const { mobile, email, name, text_query } = req.query;
+
   try {
-    users = await UserModel.find();
-    // console.log("all users", users);
-    if(user.length<1){
-      return res.status(200).send({msg:"User not found in the database"})
+    const user = await UserModel.findById(userID);
+
+    if (user && user.role==="admin") {
+      const query = { role: "user" };
+
+      if (text_query) {
+        query.email = { $regex: new RegExp(text_query, "i") };
+      } else {
+        const conditions = [];
+
+        if (mobile) {
+          conditions.push({ mobile });
+        }
+
+        if (email) {
+          conditions.push({ email: { $regex: new RegExp(email, "i") } });
+        }
+
+        if (name) {
+          conditions.push({ name: { $regex: new RegExp(name, "i") } });
+        }
+
+        if (conditions.length) {
+          query.$or = conditions;
+        }
+      }
+
+      // console.log(query,"query");
+      const allusers = await UserModel.find(query);
+
+      res.status(200).send({ msg: "Welcome Admin Home Page", allusers });
+    } else {
+      res.status(400).send({ msg: "Sorry, you are not an admin" });
     }
-    res.status(200).send({ msg: "Welcome User Home Page", users });
   } catch (err) {
-    res.status(400).send({ msg: "Somthing went wrong" });
+    res.status(400).send({ msg: "Something went wrong" });
   }
 };
+
 
 const registerUser = async (req, res) => {
   try {
